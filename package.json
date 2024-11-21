@@ -4,7 +4,7 @@
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "set NODE_ENV=development&&electron ."
   },
   "repository": "https://github.com/vorenus85/cubix-nosql-chat",
   "keywords": [
@@ -19,6 +19,8 @@
   "devDependencies": {
     "@eslint/js": "^9.15.0",
     "electron": "^33.0.1",
+    "electron-reload": "^2.0.0-alpha.1",
+    "electron-reloader": "^1.2.3",
     "eslint": "^9.15.0",
     "globals": "^15.12.0",
     "prettier": "^3.3.3"
