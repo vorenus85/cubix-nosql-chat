@@ -38,11 +38,25 @@
           <!-- Rooms Module -->
           <div class="mb-3 module rooms">
             <h5 class="text-center">Rooms</h5>
-            <ul class="list-group">
-              <li class="list-group-item">Room 1</li>
-              <li class="list-group-item">Room 2</li>
-              <li class="list-group-item">Room 3</li>
-            </ul>
+            <ul class="list-group mb-3" id="rooms-list"></ul>
+            <div class="input-group mb-3">
+              <input
+                type="text"
+                class="form-control"
+                id="roomInput"
+                placeholder="New room name..."
+              />
+              <div class="input-group-append">
+                <button
+                  class="btn btn-primary"
+                  type="button"
+                  id="addNewRoom"
+                  onclick="chatController.addNewRoom()"
+                >
+                  <i class="fa fa-plus"></i>
+                </button>
+              </div>
+            </div>
           </div>
           <!-- People Module -->
           <div class="module peaple">
@@ -58,14 +72,15 @@
         <!-- Messages -->
         <div class="col-8 bg-white d-flex flex-column py-3">
           <!-- Messages List -->
+
+          <div class="selected-room-label">
+            <strong>Selected room:</strong> <span id="selectedRoom"></span>
+          </div>
           <div
             id="messages"
             class="flex-grow-1 overflow-auto mb-3"
             style="border: 1px solid #ddd; padding: 10px"
-          >
-            <p><strong>User 1:</strong> Hello!</p>
-            <p><strong>User 2:</strong> Hi there!</p>
-          </div>
+          ></div>
           <!-- Message Input -->
           <div>
             <div class="input-group">
