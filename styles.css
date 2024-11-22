@@ -4,3 +4,26 @@
 body {
   background: rgba(239, 246, 252, 0.87);
 }
+
+html,
+body {
+  height: 100%;
+}
+
+.sidebar {
+  border-radius: 0 15px 15px 0;
+}
+
+.module {
+  padding: 1rem;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.message-item {
+  padding: 1.5rem;
+  background: rgba(239, 246, 252, 0.87);
+  border-radius: 15px;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}

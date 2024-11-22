@@ -10,18 +10,91 @@
     />-->
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-      crossorigin="anonymous"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     />
 
     <link href="./styles.css" rel="stylesheet" />
-    <title>Hello World!</title>
+    <title>Cubix chat app!</title>
   </head>
   <body>
+    <div class="container-fluid vh-100">
+      <div class="row h-100">
+        <!-- Sidebar -->
+        <div
+          class="col-1 bg-dark text-white d-flex flex-column align-items-center justify-content-end py-3"
+        >
+          <!-- Logout button -->
+          <button class="btn btn-danger" title="Logout" onclick="chatController.logout()">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+
+        <!-- Rooms & People -->
+        <div class="col-3 bg-light d-flex flex-column py-3">
+          <!-- Rooms Module -->
+          <div class="mb-3 module rooms">
+            <h5 class="text-center">Rooms</h5>
+            <ul class="list-group">
+              <li class="list-group-item">Room 1</li>
+              <li class="list-group-item">Room 2</li>
+              <li class="list-group-item">Room 3</li>
+            </ul>
+          </div>
+          <!-- People Module -->
+          <div class="module peaple">
+            <h5 class="text-center">People</h5>
+            <ul class="list-group">
+              <li class="list-group-item">User 1</li>
+              <li class="list-group-item">User 2</li>
+              <li class="list-group-item">User 3</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="col-8 bg-white d-flex flex-column py-3">
+          <!-- Messages List -->
+          <div
+            id="messages"
+            class="flex-grow-1 overflow-auto mb-3"
+            style="border: 1px solid #ddd; padding: 10px"
+          >
+            <p><strong>User 1:</strong> Hello!</p>
+            <p><strong>User 2:</strong> Hi there!</p>
+          </div>
+          <!-- Message Input -->
+          <div>
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                id="messageInput"
+                placeholder="Type your message..."
+              />
+              <div class="input-group-append">
+                <button
+                  class="btn btn-primary"
+                  type="button"
+                  id="sendMessage"
+                  onclick="chatController.sendMessage()"
+                >
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <script>
       const chatController = require('./chat-controller.js')
       const chatService = require('./chat-service.js')
+
+      chatController.init()
 
       window.onbeforeunload = function () {
         chatService.disconnect()
