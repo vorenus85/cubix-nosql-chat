@@ -60,7 +60,6 @@ chatService.sendMessage = function ({ options }) {
 
   // Push the new message into the room's message array
   messages[room].push(message)
-  console.log(messages)
 }
 
 chatService.getRooms = function () {
