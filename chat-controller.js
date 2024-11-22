@@ -4,15 +4,12 @@ const chatController = {}
 
 let selectedRoom = chatService.defaultRoom()
 
-chatController.renderMessages = function (messages) {
+chatController.renderMessage = function (message) {
   const messagesPanel = document.getElementById('messages')
-  messagesPanel.innerHTML = ''
-  messages.forEach(message => {
-    messagesPanel.insertAdjacentHTML(
-      'beforeEnd',
-      `<div class="message-item mb-3 bg-light"><p class="mb-1"><strong>${message.name}:</strong> ${message.message}</p><small><i>${message.datetime.toLocaleString()}</i></small></div>`
-    )
-  })
+  messagesPanel.insertAdjacentHTML(
+    'beforeEnd',
+    `<div class="message-item mb-3 bg-light"><p class="mb-1"><strong>${message.name}:</strong> ${message.message}</p><small><i>${message.datetime.toLocaleString()}</i></small></div>`
+  )
 }
 
 chatController.renderRooms = function () {
@@ -22,7 +19,7 @@ chatController.renderRooms = function () {
   rooms.forEach(room => {
     roomsPanel.insertAdjacentHTML(
       'beforeend',
-      `<li class="list-group-item" onclick="chatController.selectRoom('${room.id}')">${room.name}</li>`
+      `<li class="list-group-item" onclick="chatController.renderRoomMessages('${room.id}')">${room.name}</li>`
     )
   })
 }
@@ -31,12 +28,15 @@ chatController.setSelectedRoom = function (room) {
   selectedRoom = chatService.getRoom(room)
 }
 
-chatController.selectRoom = function (room) {
+chatController.renderRoomMessages = function (room) {
   const messages = chatService.getMessages({ options: { room } })
-
+  const messagesPanel = document.getElementById('messages')
+  messagesPanel.innerHTML = ''
   chatController.setSelectedRoom(room)
   chatController.renderSelectedRoomLabel()
-  chatController.renderMessages(messages)
+  messages.forEach(message => {
+    chatController.renderMessage(message)
+  })
 }
 
 chatController.renderSelectedRoomLabel = function () {
@@ -58,7 +58,6 @@ chatController.addNewRoom = function () {
 
 chatController.sendMessage = function () {
   const loggedInUser = chatService.getLoggedInUser()
-  const messages = chatService.getMessages({ options: { room: selectedRoom.id } })
   const messageInput = document.getElementById('messageInput')
   if (!messageInput.value) {
     return
@@ -68,8 +67,8 @@ chatController.sendMessage = function () {
     message: messageInput.value,
     datetime: new Date()
   }
-  messages.push(newMessage)
-  chatController.renderMessages(messages)
+  chatService.sendMessage({ options: { room: selectedRoom.id, message: newMessage } })
+  chatController.renderMessage(newMessage)
   messageInput.value = ''
 }
 
@@ -78,7 +77,7 @@ chatController.logout = function () {
 }
 
 chatController.init = function () {
-  chatController.selectRoom(selectedRoom.id)
+  chatController.renderRoomMessages(selectedRoom.id)
   chatController.renderRooms()
 }
 module.exports = chatController

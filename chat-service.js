@@ -52,12 +52,22 @@ chatService.getMessages = function ({ options }) {
   return messages?.[room] || []
 }
 
+chatService.sendMessage = function ({ options }) {
+  const { room, message } = options
+
+  // Ensure the room exists in messages; initialize it as an empty array if not
+  messages[room] = messages[room] || []
+
+  // Push the new message into the room's message array
+  messages[room].push(message)
+  console.log(messages)
+}
+
 chatService.getRooms = function () {
   return rooms
 }
 
 chatService.addNewRoom = function (room) {
-  console.log(room)
   rooms.push(room)
 }
 
