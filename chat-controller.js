@@ -2,13 +2,13 @@
 const chatService = require('./chat-service.js')
 const chatController = {}
 
-let selectedRoom = chatService.defaultRoom()
+let selectedRoom = null
 
 chatController.renderMessage = function (message) {
   const messagesPanel = document.getElementById('messages')
   messagesPanel.insertAdjacentHTML(
     'beforeEnd',
-    `<div class="message-item mb-3 bg-light"><p class="mb-1"><strong>${message.name}:</strong> ${message.message}</p><small><i>${message.datetime.toLocaleString()}</i></small></div>`
+    `<div class="message-item mb-3 bg-light"><p class="mb-1"><strong>${message.user}:</strong> ${message.content}</p><small><i>${message.date.toLocaleString()}</i></small></div>`
   )
 }
 
@@ -19,24 +19,36 @@ chatController.renderRooms = function () {
     rooms.forEach(room => {
       roomsPanel.insertAdjacentHTML(
         'beforeend',
-        `<li class="list-group-item room-item" role="button" onclick="chatController.renderRoomMessages('${room.id}')">${room.name}</li>`
+        `<li class="list-group-item room-item" role="button" data-id="${room.id}" onclick="chatController.renderRoomMessages('')">${room.name}</li>`
       )
     })
   })
 }
+
+document.addEventListener('click', function (event) {
+  const target = event.target.closest('.room-item')
+
+  if (target) {
+    const room = { _id: target.getAttribute('data-id'), name: target.innerHTML }
+    selectedRoom = room
+    chatController.renderRoomMessages(room)
+  }
+})
 
 chatController.setSelectedRoom = function (room) {
   selectedRoom = chatService.getRoom(room)
 }
 
 chatController.renderRoomMessages = function (room) {
-  const messages = chatService.getMessages({ options: { room } })
   const messagesPanel = document.getElementById('messages')
   messagesPanel.innerHTML = ''
-  chatController.setSelectedRoom(room)
+  selectedRoom = room
   chatController.renderSelectedRoomLabel({ name: room.name })
-  messages.forEach(message => {
-    chatController.renderMessage(message)
+  chatService.getMessages({ room }, function (messages) {
+    // console.log(messages)
+    messages.forEach(message => {
+      chatController.renderMessage(message)
+    })
   })
 }
 
@@ -64,12 +76,21 @@ chatController.sendMessage = function () {
   if (!messageInput.value) {
     return
   }
-  const newMessage = {
-    ...loggedInUser,
-    message: messageInput.value,
-    datetime: new Date()
+  if (!selectedRoom) {
+    console.error('No room selected!')
+    return
   }
-  chatService.sendMessage({ options: { room: selectedRoom.id, message: newMessage } })
+
+  const newMessage = {
+    room: selectedRoom._id,
+    content: messageInput.value,
+    user: loggedInUser.name,
+    date: new Date()
+  }
+
+  chatService.sendMessage({
+    options: { ...newMessage }
+  })
   chatController.renderMessage(newMessage)
   messageInput.value = ''
 }

@@ -77,19 +77,16 @@ chatService.getLoggedInUser = function () {
   return loggedInUser
 }
 
-chatService.getMessages = function ({ options }) {
+chatService.getMessages = function (options, cb) {
   const { room } = options
-  return messages?.[room] || []
+  Message.find({ room: room._id }).then(result => {
+    cb(result)
+  })
 }
 
 chatService.sendMessage = function ({ options }) {
-  const { room, message } = options
-
-  // Ensure the room exists in messages; initialize it as an empty array if not
-  messages[room] = messages[room] || []
-
-  // Push the new message into the room's message array
-  messages[room].push(message)
+  let newMessage = new Message({ ...options })
+  newMessage.save()
 }
 
 chatService.getRooms = function (cb) {
