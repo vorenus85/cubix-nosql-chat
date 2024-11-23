@@ -11,9 +11,26 @@ const Message = mongoose.model(
   })
 )
 
-const Room = mongoose.model('Room', new mongoose.Schema({ name: String }))
+const Room = mongoose.model('Room', new mongoose.Schema({ name: String, default: Boolean }))
 
-const defaultRoom = { id: 'room1', name: 'Room 1' }
+const defaultRoom = { default: true, name: 'Townhall' }
+
+// Create a default room if it does not exist
+Room.findOneAndUpdate(
+  { default: true }, // Search for a room marked as default
+  { $set: defaultRoom }, // Update fields using $set
+  {
+    upsert: true, // Insert if no document matches
+    new: true, // Return the new document after update
+    setDefaultsOnInsert: true // Apply defaults if a new document is created
+  }
+)
+  .then(room => {
+    // console.log('Default room:', room)
+  })
+  .catch(error => {
+    console.error('Error creating default room:', error)
+  })
 
 let loggedInUser = {
   id: 1,
@@ -84,9 +101,15 @@ chatService.getRooms = function (cb) {
 
 chatService.addNewRoom = async function (room, successCb) {
   const { name } = room
-  let newRoom = new Room({ name })
+  let newRoom = new Room({ name, default: false })
   await newRoom.save()
   successCb()
+}
+
+chatService.getDefaultRoom = function (cb) {
+  Room.findOne({ default: true }).then(result => {
+    cb(result)
+  })
 }
 
 chatService.login = function (options, successCb, failCb) {

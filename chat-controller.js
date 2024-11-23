@@ -34,15 +34,15 @@ chatController.renderRoomMessages = function (room) {
   const messagesPanel = document.getElementById('messages')
   messagesPanel.innerHTML = ''
   chatController.setSelectedRoom(room)
-  chatController.renderSelectedRoomLabel()
+  chatController.renderSelectedRoomLabel({ name: room.name })
   messages.forEach(message => {
     chatController.renderMessage(message)
   })
 }
 
-chatController.renderSelectedRoomLabel = function () {
+chatController.renderSelectedRoomLabel = function (room) {
   const roomLabel = document.getElementById('selectedRoom')
-  roomLabel.innerHTML = selectedRoom.name
+  roomLabel.innerHTML = room.name
 }
 
 chatController.addNewRoom = async function () {
@@ -100,7 +100,9 @@ chatController.login = function () {
         loginScreen.style.display = 'none'
         loggedInScreen.style.display = 'flex'
         chatController.renderRooms()
-        chatController.renderRoomMessages(selectedRoom.id)
+        chatService.getDefaultRoom(function (room) {
+          chatController.renderRoomMessages(room)
+        })
 
         usernameInput.value = ''
         serverInput.value = ''
