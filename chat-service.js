@@ -1,8 +1,21 @@
 const chatService = {}
+let mongoose = require('mongoose')
+
+const Message = mongoose.model(
+  'Message',
+  new mongoose.Schema({
+    user: String,
+    date: Date,
+    content: String,
+    room: String
+  })
+)
+
+const Room = mongoose.model('Room', new mongoose.Schema({ name: String }))
 
 const defaultRoom = { id: 'room1', name: 'Room 1' }
 
-const loggedInUser = {
+let loggedInUser = {
   id: 1,
   name: 'User 1'
 }
@@ -62,17 +75,32 @@ chatService.sendMessage = function ({ options }) {
   messages[room].push(message)
 }
 
-chatService.getRooms = function () {
+chatService.getRooms = function (cb) {
+  Room.find().then(result => {
+    cb(result)
+  })
   return rooms
 }
 
-chatService.addNewRoom = function (room) {
-  rooms.push(room)
+chatService.addNewRoom = async function (room, successCb) {
+  const { name } = room
+  let newRoom = new Room({ name })
+  await newRoom.save()
+  successCb()
 }
 
-chatService.login = function (user) {
+chatService.login = function (options, successCb, failCb) {
+  loggedInUser = { id: 1, name: options.username }
+  mongoose
+    .connect('mongodb://' + options.serverAddress + ':27017/cubixchat?authSource=admin', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
+    .then(function () {
+      successCb()
+    }, failCb)
+
   console.log('login')
-  loggedInUser = { id: 1, name: user.name }
 }
 
 chatService.logout = function () {

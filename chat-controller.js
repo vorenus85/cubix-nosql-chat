@@ -15,12 +15,13 @@ chatController.renderMessage = function (message) {
 chatController.renderRooms = function () {
   const roomsPanel = document.getElementById('rooms-list')
   roomsPanel.innerHTML = ''
-  const rooms = chatService.getRooms()
-  rooms.forEach(room => {
-    roomsPanel.insertAdjacentHTML(
-      'beforeend',
-      `<li class="list-group-item room-item" role="button" onclick="chatController.renderRoomMessages('${room.id}')">${room.name}</li>`
-    )
+  chatService.getRooms(function (rooms) {
+    rooms.forEach(room => {
+      roomsPanel.insertAdjacentHTML(
+        'beforeend',
+        `<li class="list-group-item room-item" role="button" onclick="chatController.renderRoomMessages('${room.id}')">${room.name}</li>`
+      )
+    })
   })
 }
 
@@ -44,16 +45,17 @@ chatController.renderSelectedRoomLabel = function () {
   roomLabel.innerHTML = selectedRoom.name
 }
 
-chatController.addNewRoom = function () {
+chatController.addNewRoom = async function () {
   const roomInput = document.getElementById('roomInput')
 
   if (!roomInput.value) {
     return false
   }
 
-  chatService.addNewRoom({ id: 'adasds', name: roomInput.value })
-  chatController.renderRooms()
-  roomInput.innerHTML = ''
+  await chatService.addNewRoom({ name: roomInput.value }, function () {
+    roomInput.value = ''
+    chatController.renderRooms()
+  })
 }
 
 chatController.sendMessage = function () {
@@ -87,16 +89,27 @@ chatController.login = function () {
     loginError.innerHTML = 'Please give Username, server and password!'
     return
   } else {
-    loginScreen.style.display = 'none'
-    loggedInScreen.style.display = 'flex'
-
-    const user = {
-      name: usernameInput.value
+    const config = {
+      username: usernameInput.value,
+      serverAddress: serverInput.value
     }
-    usernameInput.value = ''
-    serverInput.value = ''
-    passwordInput.value = ''
-    chatService.login(user)
+
+    chatService.login(
+      config,
+      function () {
+        loginScreen.style.display = 'none'
+        loggedInScreen.style.display = 'flex'
+        chatController.renderRooms()
+        chatController.renderRoomMessages(selectedRoom.id)
+
+        usernameInput.value = ''
+        serverInput.value = ''
+        passwordInput.value = ''
+      },
+      function (err) {
+        console.log('Failed to connect database', err)
+      }
+    )
   }
 }
 
@@ -106,10 +119,5 @@ chatController.logout = function () {
   loginScreen.style.display = 'flex'
   loggedInScreen.style.display = 'none'
   chatService.logout()
-}
-
-chatController.init = function () {
-  chatController.renderRoomMessages(selectedRoom.id)
-  chatController.renderRooms()
 }
 module.exports = chatController

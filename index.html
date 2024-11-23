@@ -27,13 +27,25 @@
         <!-- Username -->
         <div class="form-group">
           <label for="username"> <i class="fas fa-user"></i> Username </label>
-          <input type="text" class="form-control" id="username" placeholder="Enter your username" />
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            placeholder="Enter your username"
+            value="Jani"
+          />
         </div>
 
         <!-- Server -->
         <div class="form-group">
           <label for="server"> <i class="fas fa-server"></i> Server </label>
-          <input type="text" class="form-control" id="server" placeholder="Enter server address" />
+          <input
+            type="text"
+            class="form-control"
+            id="server"
+            placeholder="Enter server address"
+            value="127.0.0.1"
+          />
         </div>
 
         <!-- Password -->
@@ -44,6 +56,7 @@
             class="form-control"
             id="password"
             placeholder="Enter your password"
+            value="asd"
           />
         </div>
         <div class="form-group">
@@ -143,8 +156,6 @@
     <script>
       const chatController = require('./chat-controller.js')
       const chatService = require('./chat-service.js')
-
-      chatController.init()
 
       window.onbeforeunload = function () {
         chatService.disconnect()
