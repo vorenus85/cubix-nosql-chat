@@ -21,57 +21,42 @@
     <title>Cubix chat app!</title>
   </head>
   <body>
-    <div
-      class="container d-flex justify-content-center align-items-center vh-100"
-      id="login-screen"
-    >
+    <div class="container justify-content-center align-items-center vh-100" id="login-screen">
       <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px">
         <h3 class="text-center mb-4">Login</h3>
-        <form>
-          <!-- Username -->
-          <div class="form-group">
-            <label for="username"> <i class="fas fa-user"></i> Username </label>
-            <input
-              type="text"
-              class="form-control"
-              id="username"
-              placeholder="Enter your username"
-              required
-            />
-          </div>
+        <!-- Username -->
+        <div class="form-group">
+          <label for="username"> <i class="fas fa-user"></i> Username </label>
+          <input type="text" class="form-control" id="username" placeholder="Enter your username" />
+        </div>
 
-          <!-- Server -->
-          <div class="form-group">
-            <label for="server"> <i class="fas fa-server"></i> Server </label>
-            <input
-              type="text"
-              class="form-control"
-              id="server"
-              placeholder="Enter server address"
-              required
-            />
-          </div>
+        <!-- Server -->
+        <div class="form-group">
+          <label for="server"> <i class="fas fa-server"></i> Server </label>
+          <input type="text" class="form-control" id="server" placeholder="Enter server address" />
+        </div>
 
-          <!-- Password -->
-          <div class="form-group">
-            <label for="password"> <i class="fas fa-lock"></i> Password </label>
-            <input
-              type="password"
-              class="form-control"
-              id="password"
-              placeholder="Enter your password"
-              required
-            />
-          </div>
+        <!-- Password -->
+        <div class="form-group">
+          <label for="password"> <i class="fas fa-lock"></i> Password </label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            placeholder="Enter your password"
+          />
+        </div>
+        <div class="form-group">
+          <small class="form-text text-danger" id="loginError"></small>
+        </div>
 
-          <!-- Submit Button -->
-          <button type="submit" class="btn btn-primary btn-block">
-            <i class="fas fa-sign-in-alt"></i> Login
-          </button>
-        </form>
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-block" onclick="chatController.login()">
+          <i class="fas fa-sign-in-alt"></i> Login
+        </button>
       </div>
     </div>
-    <div class="container-fluid vh-100" id="logged-in-screen" style="display: none">
+    <div class="container-fluid vh-100 flex-column" id="logged-in-screen" style="display: none">
       <div class="row h-100">
         <!-- Sidebar -->
         <div

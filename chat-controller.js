@@ -19,7 +19,7 @@ chatController.renderRooms = function () {
   rooms.forEach(room => {
     roomsPanel.insertAdjacentHTML(
       'beforeend',
-      `<li class="list-group-item" onclick="chatController.renderRoomMessages('${room.id}')">${room.name}</li>`
+      `<li class="list-group-item room-item" role="button" onclick="chatController.renderRoomMessages('${room.id}')">${room.name}</li>`
     )
   })
 }
@@ -72,7 +72,39 @@ chatController.sendMessage = function () {
   messageInput.value = ''
 }
 
+chatController.login = function () {
+  const loginScreen = document.getElementById('login-screen')
+  const loggedInScreen = document.getElementById('logged-in-screen')
+
+  const usernameInput = document.getElementById('username')
+  const serverInput = document.getElementById('server')
+  const passwordInput = document.getElementById('password')
+
+  const loginError = document.getElementById('loginError')
+  loginError.innerHTML = ''
+
+  if (!usernameInput.value || !serverInput.value || !passwordInput.value) {
+    loginError.innerHTML = 'Please give Username, server and password!'
+    return
+  } else {
+    loginScreen.style.display = 'none'
+    loggedInScreen.style.display = 'flex'
+
+    const user = {
+      name: usernameInput.value
+    }
+    usernameInput.value = ''
+    serverInput.value = ''
+    passwordInput.value = ''
+    chatService.login(user)
+  }
+}
+
 chatController.logout = function () {
+  const loginScreen = document.getElementById('login-screen')
+  const loggedInScreen = document.getElementById('logged-in-screen')
+  loginScreen.style.display = 'flex'
+  loggedInScreen.style.display = 'none'
   chatService.logout()
 }
 

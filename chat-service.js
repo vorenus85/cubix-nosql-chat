@@ -70,12 +70,16 @@ chatService.addNewRoom = function (room) {
   rooms.push(room)
 }
 
-chatService.login = function () {}
-
-chatService.logout = function () {
-  alert('logout')
+chatService.login = function (user) {
+  console.log('login')
+  loggedInUser = { id: 1, name: user.name }
 }
 
+chatService.logout = function () {
+  loggedInUser = {}
+}
+
+// disconnect from db
 chatService.disconnect = function () {}
 
 module.exports = chatService

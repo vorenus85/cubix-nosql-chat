@@ -26,3 +26,12 @@ body {
   border-radius: 15px;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
+
+#logged-in-screen,
+#login-screen {
+  display: flex;
+}
+
+.room-item:hover {
+  color: var(--primary);
+}
