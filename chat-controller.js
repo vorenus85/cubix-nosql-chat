@@ -1,8 +1,13 @@
 // const _ = require('lodash')
 const chatService = require('./chat-service.js')
+const _ = require('lodash')
 const chatController = {}
 
 let selectedRoom = null
+
+function removeHtmlTags(input) {
+  return input.replace(/<[^>]*>/g, '')
+}
 
 chatController.renderMessage = function (message) {
   const messagesPanel = document.getElementById('messages')
@@ -15,7 +20,7 @@ chatController.renderMessage = function (message) {
 chatController.renderRooms = function () {
   const roomsPanel = document.getElementById('rooms-list')
   roomsPanel.innerHTML = ''
-  chatService.getRooms(function (rooms) {
+  chatService.getRoom(function (rooms) {
     rooms.forEach(room => {
       roomsPanel.insertAdjacentHTML(
         'beforeend',
@@ -35,17 +40,12 @@ document.addEventListener('click', function (event) {
   }
 })
 
-chatController.setSelectedRoom = function (room) {
-  selectedRoom = chatService.getRoom(room)
-}
-
 chatController.renderRoomMessages = function (room) {
   const messagesPanel = document.getElementById('messages')
   messagesPanel.innerHTML = ''
   selectedRoom = room
   chatController.renderSelectedRoomLabel({ name: room.name })
   chatService.getMessages({ room }, function (messages) {
-    // console.log(messages)
     messages.forEach(message => {
       chatController.renderMessage(message)
     })
@@ -73,7 +73,8 @@ chatController.addNewRoom = async function () {
 chatController.sendMessage = function () {
   const loggedInUser = chatService.getLoggedInUser()
   const messageInput = document.getElementById('messageInput')
-  if (!messageInput.value) {
+  const messageInputValue = _.escape(removeHtmlTags(messageInput.value))
+  if (!messageInputValue) {
     return
   }
   if (!selectedRoom) {
@@ -83,7 +84,7 @@ chatController.sendMessage = function () {
 
   const newMessage = {
     room: selectedRoom._id,
-    content: messageInput.value,
+    content: messageInputValue,
     user: loggedInUser.name,
     date: new Date()
   }
@@ -95,24 +96,34 @@ chatController.sendMessage = function () {
   messageInput.value = ''
 }
 
+chatController.renderLoggedInUsername = function () {
+  const loggedInUserElem = document.getElementById('loggedInUser')
+  const user = chatService.getLoggedInUser()
+  console.log(user)
+  loggedInUserElem.innerHTML = user.name
+}
+
 chatController.login = function () {
   const loginScreen = document.getElementById('login-screen')
   const loggedInScreen = document.getElementById('logged-in-screen')
 
   const usernameInput = document.getElementById('username')
+  const usernameInputValue = _.escape(removeHtmlTags(usernameInput.value))
   const serverInput = document.getElementById('server')
+  const serverInputValue = _.escape(removeHtmlTags(serverInput.value))
   const passwordInput = document.getElementById('password')
+  const passwordInputValue = _.escape(removeHtmlTags(passwordInput.value))
 
   const loginError = document.getElementById('loginError')
   loginError.innerHTML = ''
 
-  if (!usernameInput.value || !serverInput.value || !passwordInput.value) {
+  if (!usernameInputValue || !serverInputValue || !passwordInputValue) {
     loginError.innerHTML = 'Please give Username, server and password!'
     return
   } else {
     const config = {
-      username: usernameInput.value,
-      serverAddress: serverInput.value
+      username: usernameInputValue,
+      serverAddress: serverInputValue
     }
 
     chatService.login(
@@ -121,6 +132,7 @@ chatController.login = function () {
         loginScreen.style.display = 'none'
         loggedInScreen.style.display = 'flex'
         chatController.renderRooms()
+        chatController.renderLoggedInUsername()
         chatService.getDefaultRoom(function (room) {
           chatController.renderRoomMessages(room)
         })

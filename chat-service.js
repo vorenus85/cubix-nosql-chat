@@ -32,42 +32,7 @@ Room.findOneAndUpdate(
     console.error('Error creating default room:', error)
   })
 
-let loggedInUser = {
-  id: 1,
-  name: 'User 1'
-}
-
-let rooms = [
-  { id: 'room1', name: 'Room 1' },
-  { id: 'room2', name: 'Room 2' }
-]
-
-let messages = {
-  room1: [
-    {
-      id: 1,
-      name: 'User 1',
-      message: 'Hello',
-      datetime: new Date('2024-11-22 14:13:22')
-    },
-    {
-      id: 2,
-      name: 'User 2',
-      message: 'Hello there',
-      datetime: new Date('2024-11-22 14:15:22')
-    },
-    {
-      id: 3,
-      name: 'User 3',
-      message: 'I am here too!',
-      datetime: new Date('2024-11-22 14:18:22')
-    }
-  ]
-}
-
-chatService.getRoom = function (roomId) {
-  return rooms.find(room => room.id === roomId)
-}
+let loggedInUser = {}
 
 chatService.defaultRoom = function () {
   return defaultRoom
@@ -89,11 +54,10 @@ chatService.sendMessage = function ({ options }) {
   newMessage.save()
 }
 
-chatService.getRooms = function (cb) {
+chatService.getRoom = function (cb) {
   Room.find().then(result => {
     cb(result)
   })
-  return rooms
 }
 
 chatService.addNewRoom = async function (room, successCb) {

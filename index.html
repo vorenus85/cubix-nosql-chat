@@ -16,7 +16,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     />
-
     <link href="./styles.css" rel="stylesheet" />
     <title>Cubix chat app!</title>
   </head>
@@ -83,6 +82,10 @@
 
         <!-- Rooms & People -->
         <div class="col-3 bg-light d-flex flex-column py-3">
+          <div class="mb-3 module">
+            <div>Hello: <strong id="loggedInUser"></strong></div>
+          </div>
+
           <!-- Rooms Module -->
           <div class="mb-3 module rooms">
             <h5 class="text-center">Rooms</h5>
